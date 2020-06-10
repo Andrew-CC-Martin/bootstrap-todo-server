@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const { Sequelize, DataTypes } = require('sequelize')
+const { Pool } = require('pg')
 
 const config = require('./database/config/config.json')
 const todoModel = require('./database/models/todos')
@@ -15,10 +16,20 @@ const {
   database, username, password, host,
 } = config[env]
 
-const sequelize = new Sequelize(database, username, password, {
-  host,
-  dialect: 'postgres',
-})
+// checks if env is Heroku, if so, sets sequelize to utilize the database hosted on heroku
+let sequelize
+if (process.env.DATABASE_URL) {
+  // the application is executed on Heroku ... use the postgres database
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+  })
+} else {
+  sequelize = new Sequelize(database, username, password, {
+    host,
+    dialect: 'postgres',
+  })
+}
+
 
 sequelize.authenticate()
   .then(console.log('Connection to database has been established successfully'))
