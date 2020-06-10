@@ -1,0 +1,31 @@
+{
+  "name": "bootstrap-todo-server",
+  "version": "1.0.0",
+  "description": "backend for basic todo app",
+  "engines": {
+    "node": "12.16.3"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test",
+    "start:dev": "nodemon",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Andrew-CC-Martin/bootstrap-todo-server.git"
+  },
+  "author": "Andrew Martin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Andrew-CC-Martin/bootstrap-todo-server/issues"
+  },
+  "homepage": "https://github.com/Andrew-CC-Martin/bootstrap-todo-server#readme",
+  "dependencies": {
+    "cors": "2.8.5",
+    "express": "4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.4"
+  }
+}
