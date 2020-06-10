@@ -3,23 +3,26 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const { Sequelize, DataTypes } = require('sequelize')
 
-const config = require('./database/config/config.json');
+const config = require('./database/config/config.json')
 const todoModel = require('./database/models/todos')
 const { appConfig } = require('./constants')
 
 const app = express()
 
-const env = process.env.NODE_ENV || appConfig.DEFAULT_ENVIRONMENT;
-const { database, username, password, host } = config[env]
+const port = process.env.PORT || appConfig.DEFAULT_PORT
+const env = process.env.NODE_ENV || appConfig.DEFAULT_ENVIRONMENT
+const {
+  database, username, password, host,
+} = config[env]
 
 const sequelize = new Sequelize(database, username, password, {
   host,
-  dialect: 'postgres'
+  dialect: 'postgres',
 })
 
 sequelize.authenticate()
   .then(console.log('Connection to database has been established successfully'))
-  .catch(error => console.log('Unable to connect to the database: ', error))
+  .catch((error) => console.log('Unable to connect to the database: ', error))
 
 const Todo = todoModel(sequelize, DataTypes)
 
@@ -27,7 +30,7 @@ const Todo = todoModel(sequelize, DataTypes)
 app.use(cors())
 // support parsing of application/json type post data
 app.use(bodyParser.json())
-//support parsing of application/x-www-form-urlencoded post data
+// support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.post('/todos/add', async (req, res) => {
@@ -38,7 +41,7 @@ app.post('/todos/add', async (req, res) => {
     res.send(result)
   } catch (err) {
     res.status(500).send({
-      message: `couldn't create todo: ${err.message}`
+      message: `couldn't create todo: ${err.message}`,
     })
   }
 })
@@ -47,16 +50,16 @@ app.delete('/todos/delete/:id', async (req, res) => {
   const { params: { id } } = req
 
   try {
-    await Todo.destroy({ 
+    await Todo.destroy({
       where: {
-        id
-      }
+        id,
+      },
     })
 
     res.sendStatus(200)
   } catch (err) {
     res.status(500).send({
-      message: `couldn't delete todo: ${err.message}`
+      message: `couldn't delete todo: ${err.message}`,
     })
   }
 })
@@ -67,7 +70,5 @@ app.get('/todos', async (_req, res) => {
   res.send({ todos })
 })
 
-
-const port = process.env.PORT || '4000'
 app.listen(port)
 console.log(`Listening on port: ${port}`)

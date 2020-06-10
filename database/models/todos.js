@@ -3,9 +3,9 @@ module.exports = (sequelize, DataTypes) => {
     text: {
       type: DataTypes.STRING,
       unique: true,
-    }
+    },
   }, {})
-  todos.associate = function(models) {
+  todos.associate = (_models) => {
     // associations can be defined here
   }
   return todos
