@@ -10,12 +10,24 @@ app.use(bodyParser.json())
 //support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.get('/hello', async (_req, res) => {
-  res.send({
-    result: "hello node",
-  })
+app.get('/todos', async (_req, res) => {
+  const todos = [
+    {
+      id: 0,
+      text: 'buy milk',
+    },
+    {
+      id: 1,
+      text: 'go to post office',
+    },
+    {
+      id: 2,
+      text: 'do laundry',
+    },
+  ]
+  res.send({ todos })
 })
 
 const port = process.env.PORT || '4000'
-app.listen(process.env.PORT || '4000')
+app.listen(port)
 console.log(`Listening on port: ${port}`)
