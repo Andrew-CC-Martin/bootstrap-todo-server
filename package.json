@@ -9,7 +9,8 @@
   "scripts": {
     "test": "npm run test",
     "start:dev": "nodemon",
-    "start": "node index.js"
+    "start": "node index.js",
+    "lint": "eslint --ext .js ."
   },
   "repository": {
     "type": "git",
@@ -22,10 +23,18 @@
   },
   "homepage": "https://github.com/Andrew-CC-Martin/bootstrap-todo-server#readme",
   "dependencies": {
+    "body-parser": "1.19.0",
     "cors": "2.8.5",
-    "express": "4.17.1"
+    "express": "4.17.1",
+    "pg": "8.2.1",
+    "pg-hstore": "2.3.3",
+    "sequelize": "5.21.12",
+    "sequelize-cli": "5.5.1"
   },
   "devDependencies": {
+    "eslint": "6.8.0",
+    "eslint-config-airbnb-base": "14.1.0",
+    "eslint-plugin-import": "2.21.2",
     "nodemon": "2.0.4"
   }
 }
