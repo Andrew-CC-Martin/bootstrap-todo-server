@@ -2,10 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const { Sequelize, DataTypes } = require('sequelize')
-const { Pool } = require('pg')
 
-const config = require('./database/config/config.json')
-const todoModel = require('./database/models/todos')
+const config = require('./config/config.json')
+const todoModel = require('./models/todos')
 const { appConfig } = require('./constants')
 
 const app = express()
