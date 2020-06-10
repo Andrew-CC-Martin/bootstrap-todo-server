@@ -10,7 +10,8 @@
     "test": "npm run test",
     "start:dev": "nodemon",
     "start": "node index.js",
-    "lint": "eslint --ext .js ."
+    "lint": "eslint --ext .js .",
+    "migrate": "sequelize db:migrate"
   },
   "repository": {
     "type": "git",
