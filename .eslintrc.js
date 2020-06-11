@@ -2,6 +2,7 @@ module.exports = {
   env: {
     browser: true,
     es2020: true,
+    "jest/globals": true,
   },
   extends: [
     'airbnb-base',
@@ -10,6 +11,9 @@ module.exports = {
     ecmaVersion: 11,
     sourceType: 'module',
   },
+  plugins: [
+    'jest',
+  ],
   rules: {
     semi: [
       'error', 'never',
