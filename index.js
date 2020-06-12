@@ -56,6 +56,24 @@ app.post('/todos/add', async (req, res) => {
   }
 })
 
+app.put('/todos/update/:id', async (req, res) => {
+  const { body: { todoInput }, params: { id } } = req
+
+  try {
+    await Todo.update({ text: todoInput }, {
+      where: {
+        id,
+      },
+    })
+
+    res.sendStatus(200)
+  } catch (err) {
+    res.status(500).send({
+      message: `couldn't update todo: ${err.message}`,
+    })
+  }
+})
+
 app.delete('/todos/delete/:id', async (req, res) => {
   const { params: { id } } = req
 
@@ -75,7 +93,11 @@ app.delete('/todos/delete/:id', async (req, res) => {
 })
 
 app.get('/todos', async (_req, res) => {
-  const todos = await Todo.findAll()
+  const todos = await Todo.findAll({
+    order: [
+      ['id', 'ASC'],
+    ],
+  })
 
   res.send({ todos })
 })

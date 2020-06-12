@@ -7,11 +7,18 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "npm run test",
+    "test": "jest",
     "start:dev": "nodemon",
     "start": "node index.js",
     "lint": "eslint --ext .js .",
-    "migrate": "sequelize db:migrate"
+    "migrate": "sequelize db:migrate",
+    "restoredb": "pg_restore -v -c -x -O -h localhost -U postgres -d database_development latest.dump",
+    "prepush": "npm run lint && npm test"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run prepush"
+    }
   },
   "repository": {
     "type": "git",
@@ -36,6 +43,10 @@
     "eslint": "6.8.0",
     "eslint-config-airbnb-base": "14.1.0",
     "eslint-plugin-import": "2.21.2",
-    "nodemon": "2.0.4"
+    "eslint-plugin-jest": "23.13.2",
+    "husky": "4.2.5",
+    "jest": "26.0.1",
+    "nodemon": "2.0.4",
+    "typescript": "3.9.5"
   }
 }
