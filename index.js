@@ -3,9 +3,9 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const { Sequelize, DataTypes } = require('sequelize')
 
-const config = require('./config/config.json')
-const todoModel = require('./models/todos')
-const { appConfig } = require('./constants')
+const config = require('./src/db/config/config.json')
+const todoModel = require('./src/db/models/todos')
+const { appConfig } = require('./src/constants')
 
 const app = express()
 
@@ -28,7 +28,6 @@ if (process.env.DATABASE_URL) {
     dialect: 'postgres',
   })
 }
-
 
 sequelize.authenticate()
   .then(console.log('Connection to database has been established successfully'))
