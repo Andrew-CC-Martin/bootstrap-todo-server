@@ -5,6 +5,7 @@ const { Sequelize, DataTypes } = require('sequelize')
 
 const config = require('./src/db/config/config.json')
 const todoModel = require('./src/db/models/todos')
+const userModel = require('./src/db/models/users')
 const { appConfig } = require('./src/constants')
 
 const app = express()
@@ -35,12 +36,30 @@ sequelize.authenticate()
 
 const Todo = todoModel(sequelize, DataTypes)
 
+const User = userModel(sequelize, DataTypes)
+
 // Allow cross-origin requests
 app.use(cors())
 // support parsing of application/json type post data
 app.use(bodyParser.json())
 // support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.put('/users/add', async (req, res) => {
+  const { body: { email, fullName, rawPassword } } = req
+  // todo - verify email is valid
+  await User.create({ email, full_name: fullName, password: rawPassword })
+  res.sendStatus(200)
+})
+
+app.get('/users/login', async (req, res) => {
+  const { body: { email, rawPassword } } = req
+  console.log('rawPassword', rawPassword)
+  // todo - get user from email
+  // - hash received pswd and verify it against one from User.password
+  await User.get({ email })
+  res.sendStatus(200)
+})
 
 app.post('/todos/add', async (req, res) => {
   const { body: { todoInput } } = req
