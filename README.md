@@ -8,15 +8,25 @@ a project to create the classic todo list app, bootstrapped from scratch without
 
 ## Dependencies
 
-- node v12.16.3
+- node 12.16.3
 
-- Postgres v12.2
+- Postgres 12.2
+
+- Direnv 2.17.0
 
 ## How to use
 
 Install packages
 
 - `$npm i`
+
+Add environment variables
+
+- `$direnv allow .envrc`
+
+- `$cp .envrc.sample .envrc`
+
+- Add environment variables to .envrc
 
 To run dev server
 
