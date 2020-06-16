@@ -2,15 +2,20 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const { Sequelize, DataTypes } = require('sequelize')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
-const config = require('./config/config.json')
-const todoModel = require('./models/todos')
-const { appConfig } = require('./constants')
+const config = require('./src/db/config/config.json')
+const todoModel = require('./src/db/models/todos')
+const userModel = require('./src/db/models/users')
+const { appConfig } = require('./src/constants')
+const { validateEmail } = require('./src/utils')
 
 const app = express()
 
 const port = process.env.PORT || appConfig.DEFAULT_PORT
 const env = process.env.NODE_ENV || appConfig.DEFAULT_ENVIRONMENT
+
 const {
   database, username, password, host,
 } = config[env]
@@ -29,12 +34,13 @@ if (process.env.DATABASE_URL) {
   })
 }
 
-
 sequelize.authenticate()
   .then(console.log('Connection to database has been established successfully'))
   .catch((error) => console.log('Unable to connect to the database: ', error))
 
 const Todo = todoModel(sequelize, DataTypes)
+
+const User = userModel(sequelize, DataTypes)
 
 // Allow cross-origin requests
 app.use(cors())
@@ -42,6 +48,64 @@ app.use(cors())
 app.use(bodyParser.json())
 // support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.put('/users/add', async (req, res) => {
+  const { body: { email, fullName, rawPassword } } = req
+
+  const validEmail = validateEmail(email)
+  // todo - validate password
+
+  if (validEmail) {
+    const salt = await bcrypt.genSalt()
+    const encryptedPassword = await bcrypt.hash(rawPassword, salt)
+    try {
+      const { id } = await User.create({ email, full_name: fullName, password: encryptedPassword })
+
+      const jsonWebToken = await jwt.sign(
+        { userId: id },
+        process.env.SECRET,
+      )
+      res.send({ jsonWebToken })
+    } catch (err) {
+      console.log('couldn\'t create user. err.message:', err.message)
+      res.status(500).send({
+        message: `couldn't create user: ${err.message}`,
+      })
+    }
+  }
+
+  if (!validEmail) {
+    res.status(500).send({
+      message: 'couldn\'t create user: invalid email',
+    })
+  }
+})
+
+app.post('/users/login', async (req, res) => {
+  const { body: { email, rawPassword } } = req
+  try {
+    const user = await User.findOne({
+      where: {
+        email,
+      },
+    })
+
+    const match = await bcrypt.compare(rawPassword, user.password)
+
+    if (match) {
+      // generate jwt
+      const jsonWebToken = await jwt.sign(
+        { userId: user.id },
+        process.env.SECRET,
+      )
+      res.send({ jsonWebToken })
+    }
+  } catch (err) {
+    res.status(500).send({
+      message: `couldn't log in: ${err.message}`,
+    })
+  }
+})
 
 app.post('/todos/add', async (req, res) => {
   const { body: { todoInput } } = req
