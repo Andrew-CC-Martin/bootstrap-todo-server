@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     users.hasMany(models.todos, {
       foreignKey: 'user_id',
-      as: 'todos',
     })
   }
   return users

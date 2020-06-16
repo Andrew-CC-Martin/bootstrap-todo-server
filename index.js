@@ -108,10 +108,12 @@ app.post('/users/login', async (req, res) => {
 })
 
 app.post('/todos/add', async (req, res) => {
-  const { body: { todoInput } } = req
+  const { headers: { authorization }, body: { todoInput } } = req
 
   try {
-    const result = await Todo.create({ text: todoInput })
+    const { userId } = await jwt.verify(authorization, process.env.SECRET)
+
+    const result = await Todo.create({ text: todoInput, user_id: userId })
     res.send(result)
   } catch (err) {
     res.status(500).send({
@@ -121,12 +123,15 @@ app.post('/todos/add', async (req, res) => {
 })
 
 app.put('/todos/update/:id', async (req, res) => {
-  const { body: { todoInput }, params: { id } } = req
+  const { headers: { authorization }, body: { todoInput }, params: { id } } = req
 
   try {
+    const { userId } = await jwt.verify(authorization, process.env.SECRET)
+
     await Todo.update({ text: todoInput }, {
       where: {
         id,
+        user_id: userId,
       },
     })
 
@@ -139,12 +144,15 @@ app.put('/todos/update/:id', async (req, res) => {
 })
 
 app.delete('/todos/delete/:id', async (req, res) => {
-  const { params: { id } } = req
+  const { headers: { authorization }, params: { id } } = req
 
   try {
+    const { userId } = await jwt.verify(authorization, process.env.SECRET)
+
     await Todo.destroy({
       where: {
         id,
+        user_id: userId,
       },
     })
 
@@ -156,14 +164,27 @@ app.delete('/todos/delete/:id', async (req, res) => {
   }
 })
 
-app.get('/todos', async (_req, res) => {
-  const todos = await Todo.findAll({
-    order: [
-      ['id', 'ASC'],
-    ],
-  })
+app.get('/todos', async (req, res) => {
+  const { headers: { authorization } } = req
 
-  res.send({ todos })
+  try {
+    const { userId } = await jwt.verify(authorization, process.env.SECRET)
+
+    const todos = await Todo.findAll({
+      where: {
+        user_id: userId,
+      },
+      order: [
+        ['id', 'ASC'],
+      ],
+    })
+
+    res.send({ todos })
+  } catch (err) {
+    res.status(500).send({
+      message: `couldn't get todos: ${err.message}`,
+    })
+  }
 })
 
 app.listen(port)
