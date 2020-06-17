@@ -59,7 +59,7 @@ app.put('/users/add', async (req, res) => {
     const salt = await bcrypt.genSalt()
     const encryptedPassword = await bcrypt.hash(rawPassword, salt)
     try {
-      const { id } = await User.create({ email, full_name: fullName, password: encryptedPassword })
+      const { id } = await User.create({ email, fullName, password: encryptedPassword })
 
       const jsonWebToken = await jwt.sign(
         { userId: id },
@@ -113,7 +113,7 @@ app.post('/todos/add', async (req, res) => {
   try {
     const { userId } = await jwt.verify(authorization, process.env.SECRET)
 
-    const result = await Todo.create({ text: todoInput, user_id: userId })
+    const result = await Todo.create({ text: todoInput, userId, isDone: false })
     res.send(result)
   } catch (err) {
     res.status(500).send({
@@ -123,15 +123,15 @@ app.post('/todos/add', async (req, res) => {
 })
 
 app.put('/todos/update/:id', async (req, res) => {
-  const { headers: { authorization }, body: { todoInput }, params: { id } } = req
+  const { headers: { authorization }, body: { todoInput, isDone }, params: { id } } = req
 
   try {
     const { userId } = await jwt.verify(authorization, process.env.SECRET)
 
-    await Todo.update({ text: todoInput }, {
+    await Todo.update({ text: todoInput, isDone }, {
       where: {
         id,
-        user_id: userId,
+        userId,
       },
     })
 
@@ -152,7 +152,7 @@ app.delete('/todos/delete/:id', async (req, res) => {
     await Todo.destroy({
       where: {
         id,
-        user_id: userId,
+        userId,
       },
     })
 
@@ -172,7 +172,7 @@ app.get('/todos', async (req, res) => {
 
     const todos = await Todo.findAll({
       where: {
-        user_id: userId,
+        userId,
       },
       order: [
         ['id', 'ASC'],
