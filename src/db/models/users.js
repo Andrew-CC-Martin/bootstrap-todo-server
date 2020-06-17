@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const users = sequelize.define('users', {
-    full_name: {
+    fullName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   users.associate = (models) => {
     // associations can be defined here
     users.hasMany(models.todos, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
     })
   }
   return users

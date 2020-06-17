@@ -4,15 +4,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    user_id: {
+    userId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    isDone: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
       allowNull: false,
     },
   }, {})
   todos.associate = (models) => {
     // associations can be defined here
     todos.belongsTo(models.user, {
-      foreignKey: 'user_id',
+      foreignKey: 'userId',
     })
   }
   return todos
