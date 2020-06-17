@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => (
-    queryInterface.addColumn('todos', 'user_id', {
+    queryInterface.addColumn('todos', 'userId', {
       type: Sequelize.INTEGER,
       allowNull: false,
       references: {
@@ -13,6 +13,6 @@ module.exports = {
   ),
 
   down: (queryInterface, _Sequelize) => (
-    queryInterface.removeColumn('todos', 'user_id')
+    queryInterface.removeColumn('todos', 'userId')
   ),
 }
