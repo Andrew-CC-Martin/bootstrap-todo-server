@@ -15,10 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {})
   todos.associate = (models) => {
-    // associations can be defined here
-    todos.belongsTo(models.user, {
-      foreignKey: 'userId',
-    })
+    todos.belongsTo(models.users)
   }
   return todos
 }
