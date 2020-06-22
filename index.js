@@ -49,6 +49,11 @@ app.use(bodyParser.json())
 // support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }))
 
+// dummy endpoint used to wake up the free heroku server (which sleeps afer 15min of inactivity)
+app.get('/wakeup', (_req, res) => {
+  res.sendStatus(200)
+})
+
 app.put('/users/add', async (req, res) => {
   const { body: { email, fullName, rawPassword } } = req
 
