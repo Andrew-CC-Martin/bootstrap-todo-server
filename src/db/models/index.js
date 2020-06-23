@@ -2,19 +2,37 @@ const fs = require('fs')
 const path = require('path')
 const Sequelize = require('sequelize')
 
-const env = process.env.NODE_ENV || 'development'
+const { appConfig } = require('../../constants')
+
+const env = process.env.NODE_ENV || appConfig.DEFAULT_ENVIRONMENT
+
 const config = require('../config/config.json')[env]
 
 const basename = path.basename(__filename)
-// const config = require(__dirname + '/../config/config.json')[env]
 const db = {}
 
+const {
+  database, username, password, host,
+} = config
+
+// Connect sequelize ORM to database
+// checks if env is Heroku, if so, sets sequelize to utilize the database hosted on heroku
 let sequelize
-if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config)
+if (process.env.DATABASE_URL) {
+  // the application is executed on Heroku ... use the postgres database
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+  })
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config)
+  sequelize = new Sequelize(database, username, password, {
+    host,
+    dialect: 'postgres',
+  })
 }
+
+sequelize.authenticate()
+  .then(console.log('Connection to the database has been established successfully'))
+  .catch((error) => console.log('Unable to connect to the database: ', error))
 
 fs
   .readdirSync(__dirname)
