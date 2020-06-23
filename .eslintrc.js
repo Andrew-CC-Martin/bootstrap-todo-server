@@ -33,5 +33,12 @@ module.exports = {
     'no-unused-vars': [
       'error', { argsIgnorePattern: '^_' },
     ],
+    'import/no-extraneous-dependencies': [
+      'error', {
+        devDependencies: [
+          '**/*.test.js*', '**/*factory.*'
+        ],
+      },
+    ]
   },
 }
