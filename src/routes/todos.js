@@ -16,7 +16,9 @@ router.get('/', async (req, res) => {
         userId,
       },
       order: [
-        ['id', 'ASC'],
+        ['isDone', 'asc'],
+        ['updatedAt', 'asc'],
+        ['id', 'asc'],
       ],
     })
 
